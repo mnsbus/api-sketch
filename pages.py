@@ -5,22 +5,22 @@ from redis_access import get_pubsub, ping, pop_n_items, write_items_to_datastore
 from settings import ACCELERANDS_DOMAINS, ACCELERANDS_PING
 from settings import APIKEY, MAX_PROCESSES
 from settings import DOMAINS_MOST_RECENT, DOMAINS_MAX_PER_CHANNEL
-from settings import TOPPAGES_BASE_URL, TOPPAGES_PAGE_LIMIT, TOPPAGES_PING
-from sql_access import write_toppage_records
+from settings import pageS_BASE_URL, pageS_PAGE_LIMIT, pageS_PING
+from sql_access import write_page_records
 from utils import create_epoch_timestamp
 
 """
 
-    Hits toppages server after a ping from the producer.
+    Hits pages server after a ping from the producer.
     conceptually, assumes some kind of distributed datastore
     (NOT redis + 'localhost' as given in settings.py !)
 
 """
 
 
-def make_toppages_payload(domain):
-    """Grequests and Toppages-specific helper function """
-    return {'apikey': APIKEY, 'host': domain, 'limit': TOPPAGES_PAGE_LIMIT}
+def make_pages_payload(domain):
+    """Grequests and pages-specific helper function """
+    return {'apikey': APIKEY, 'host': domain, 'limit': pageS_PAGE_LIMIT}
 
 
 def get_domain_from_query_string(url):
@@ -37,8 +37,8 @@ def make_async_requests(domains):
     # it eventually locks up
     rs = []
     for domain in domains:
-        params = make_toppages_payload(domain)
-        rs.append(grequests.get(TOPPAGES_BASE_URL, params=params))
+        params = make_pages_payload(domain)
+        rs.append(grequests.get(pageS_BASE_URL, params=params))
     results = grequests.map(rs) # for throttling: size=DOMAINS_MAX_PER_CHANNEL
     return results
 
@@ -59,7 +59,7 @@ def process_async_response(r, timestamp):
 
 
 def process_async_responses(results):
-    """Adds consistent timestamp to toppages responses"""
+    """Adds consistent timestamp to pages responses"""
     # TODO: find more accurate way to timestamp each response
     # Better to pull out of response object
     timestamp = create_epoch_timestamp()
@@ -70,20 +70,20 @@ def process_async_responses(results):
     return docs
 
 
-def toppages_worker(domains):
+def pages_worker(domains):
     responses = make_async_requests(domains)
     documents = process_async_responses(responses)
-    write_toppage_records(documents)
+    write_page_records(documents)
     write_items_to_datastore(ACCELERANDS_DOMAINS, domains)
 
 
 def main():
-    pubsub = get_pubsub(TOPPAGES_PING)
+    pubsub = get_pubsub(pageS_PING)
     for notification in pubsub.listen():
         domains = pop_n_items(DOMAINS_MOST_RECENT, DOMAINS_MAX_PER_CHANNEL)
         print domains
         # TODO: split domains among threads/processes & launch
-        toppages_worker(domains)
+        pages_worker(domains)
         ping(ACCELERANDS_PING)
 
 

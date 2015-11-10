@@ -4,9 +4,9 @@ import sys
 import pandas as pd
 from settings import ACCELERANDS_DOMAINS, ACCELERANDS_NUM_WANTED
 from settings import ACCELERANDS_PING, ACCELERATION_INTERVAL
-from settings import TOPPAGES_MAX_PER_CHANNEL, TOPPAGES_FIELDS
+from settings import pageS_MAX_PER_CHANNEL, pageS_FIELDS
 from utils import create_epoch_timestamp
-from sql_access import get_toppage_data
+from sql_access import get_page_data
 from redis_access import get_pubsub, pop_n_items
 
 
@@ -45,7 +45,7 @@ def process_domains(domains):
     ts = int(create_epoch_timestamp())
     start_time = ts - ACCELERATION_INTERVAL
     for domain in domains:
-        data = get_toppage_data(domain, start_time)
+        data = get_page_data(domain, start_time)
         df = pd.DataFrame(data)
         # TODO: check sqlite3's output vs. delivers Python dict.items()
         # but anyway will have to be fixed so changing db server does not
@@ -55,7 +55,7 @@ def process_domains(domains):
             % acceleration_minutes}]
         if not df.empty:
             # TODO: revisit
-            df.columns = TOPPAGES_FIELDS
+            df.columns = pageS_FIELDS
             moments = pd.unique(df.timestamp.ravel())
             if len(moments) >= acceleration_minutes:
                 trending = calculate_accelerands(df, ts)
@@ -65,7 +65,7 @@ def process_domains(domains):
 def main():
     ps = get_pubsub(ACCELERANDS_PING)
     for notification in ps.listen():
-        domains = pop_n_items(ACCELERANDS_DOMAINS, TOPPAGES_MAX_PER_CHANNEL)
+        domains = pop_n_items(ACCELERANDS_DOMAINS, pageS_MAX_PER_CHANNEL)
         print domains
         # TODO: Multiprocessing
         process_domains(domains)

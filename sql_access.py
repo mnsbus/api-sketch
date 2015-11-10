@@ -1,7 +1,7 @@
 import sqlite3
 #import psycopg2
 from settings import ACCELERATION_INTERVAL, SQLITE3_FILENAME
-from settings import TOPPAGES_FIELDS, TOPPAGES_TABLE
+from settings import pageS_FIELDS, pageS_TABLE
 from utils import create_epoch_timestamp
 
 sqlc = sqlite3.connect(SQLITE3_FILENAME)
@@ -28,7 +28,7 @@ def calculcate_half_lookback():
     return lookback
 
 
-def get_toppage_data(domain, start_time, list_wanted=True):
+def get_page_data(domain, start_time, list_wanted=True):
     query = """SELECT * FROM visitors WHERE timestamp > {st} AND domain = '{dn}'""".format(st=start_time, dn=domain)
     data = sqlc.execute(query)
     if list_wanted == True:
@@ -36,9 +36,9 @@ def get_toppage_data(domain, start_time, list_wanted=True):
     return data
 
 
-def write_toppage_records(documents):
+def write_page_records(documents):
     records = create_values(documents)
-    es = make_executemany_string(TOPPAGES_TABLE, TOPPAGES_FIELDS)
+    es = make_executemany_string(pageS_TABLE, pageS_FIELDS)
     sqlc.executemany(es, records)
     sqlc.commit()
 

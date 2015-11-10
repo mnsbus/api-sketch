@@ -3,14 +3,14 @@
 import requests
 from redis_access import write_items_to_datastore, ping
 from settings import DOMAINS_MOST_RECENT, DOMAINS_INTERVAL, DOMAINS_URL
-from settings import TOPPAGES_PING
+from settings import pageS_PING
 from pycron import PyCron
 
 session=requests.Session()
 
 """
 
-    Check the domains available for toppages,
+    Check the domains available for pages,
     and make those domains available.
 
     Assume that the available domains can change,
@@ -35,7 +35,7 @@ def get_available_domains():
 def domains_worker():
     domains = get_available_domains()
     write_items_to_datastore(DOMAINS_MOST_RECENT, domains)
-    ping(TOPPAGES_PING)
+    ping(pageS_PING)
 
 
 def main():

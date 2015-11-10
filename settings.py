@@ -19,15 +19,15 @@ HOSTNAME = 'localhost' # FAKED: has to be one distributed thing
 
 MAX_PROCESSES = cpu_count()
 
-TOPPAGES_BASE_URL = 'http://api.chartbeat.com/live/toppages'
-TOPPAGES_DOMAINS = 'toppages_domains'
-TOPPAGES_FIELDS = tuple(sorted(['domain', 'i', 'path', 'timestamp', 'visitors']))
-TOPPAGES_PAGE_LIMIT = 100
-TOPPAGES_MAX_PER_CHANNEL = 100 # have to test/titrate also
-TOPPAGES_PING = 'toppages_ping'
-TOPPAGES_TABLE = 'visitors'
+pageS_BASE_URL = 'http://api.chartbeat.com/live/pages'
+pageS_DOMAINS = 'pages_domains'
+pageS_FIELDS = tuple(sorted(['domain', 'i', 'path', 'timestamp', 'visitors']))
+pageS_PAGE_LIMIT = 100
+pageS_MAX_PER_CHANNEL = 100 # have to test/titrate also
+pageS_PING = 'pages_ping'
+pageS_TABLE = 'visitors'
 
-SQLITE3_FILENAME = 'toppages'
+SQLITE3_FILENAME = 'pages'
 
 UTC = pytz.timezone('UTC')
 
