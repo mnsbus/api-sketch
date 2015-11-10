@@ -2,7 +2,7 @@ Trending
 ----------------------------------------------------------
 
 
-Note: sampple **output** can be found in output_minute_intervals.txt
+Note: sample **output** can be found in output_minute_intervals.txt
 
 Toprisers data flow:
 
