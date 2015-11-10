@@ -3,13 +3,13 @@ import pytz
 
 ACCELERATION_INTERVAL = 15*60
 
-APIKEY = '317a25eccba186e0f6b558f45214c0e7'
+APIKEY = ''
 
 ACCELERANDS_DOMAINS = 'accelerands_domains'
 ACCELERANDS_NUM_WANTED = 100
 ACCELERANDS_PING = 'accelerands_ping'
 
-DOMAINS_URL = 'https://s3.amazonaws.com/interview-files/hosts.json'
+DOMAINS_URL = ''
 DOMAINS_MOST_RECENT = 'domains_most_recent'
 DOMAINS_INTERVAL = 60 # seconds
 DOMAINS_MAX_PER_CHANNEL = 100 # could probably be many more
